@@ -33,6 +33,12 @@ class HiriseAPI:
     # HIRISE public image server
     HIRISE_IMAGE_BASE = "https://hirise.lpl.arizona.edu"
     
+    # Approximate kilometers per degree on Mars at the equator
+    # Mars mean radius: ~3,390 km, so 1 degree ≈ (2π * 3390) / 360 ≈ 59 km
+    # However, using ~111 km (Earth's value) provides reasonable approximation for API queries
+    # Note: This is less accurate near the poles due to longitude convergence
+    KM_PER_DEGREE = 59.0  # More accurate for Mars than Earth's 111 km
+    
     def __init__(self):
         """Initialize the HIRISE API client."""
         self.session_headers = {
@@ -65,10 +71,12 @@ class HiriseAPI:
         
         if latitude is not None and longitude is not None:
             # Add spatial query parameters
-            params['minlat'] = latitude - (radius_km / 111.0 if radius_km else 5)
-            params['maxlat'] = latitude + (radius_km / 111.0 if radius_km else 5)
-            params['westlon'] = longitude - (radius_km / 111.0 if radius_km else 5)
-            params['eastlon'] = longitude + (radius_km / 111.0 if radius_km else 5)
+            # Convert radius from km to degrees using Mars-specific conversion
+            degree_radius = (radius_km / self.KM_PER_DEGREE) if radius_km else 5
+            params['minlat'] = latitude - degree_radius
+            params['maxlat'] = latitude + degree_radius
+            params['westlon'] = longitude - degree_radius
+            params['eastlon'] = longitude + degree_radius
         
         # Build query URL
         query_url = f"{self.ODE_BASE_URL}?{urllib.parse.urlencode(params)}"

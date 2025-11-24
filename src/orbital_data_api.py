@@ -21,6 +21,7 @@ References:
 import urllib.request
 import urllib.parse
 import json
+import math
 from typing import Dict, List, Optional, Tuple
 from PIL import Image
 import io
@@ -73,7 +74,7 @@ class PlanetaryDataAPI:
         
         self.config = self.PLANET_CONFIG[self.planet]
         self.radius_km = self.config['radius_km']
-        self.km_per_degree = (2 * 3.14159 * self.radius_km) / 360
+        self.km_per_degree = (2 * math.pi * self.radius_km) / 360
         
         self.session_headers = {
             'User-Agent': 'GuessTheWorld-PlanetaryAPI/1.0'
@@ -207,7 +208,7 @@ class PlanetaryDataAPI:
             
             image = Image.open(io.BytesIO(image_data))
             
-            # Apply scaling if requested
+            # Apply scaling if requested (skip if scale is 1.0)
             if scale != 1.0:
                 new_size = (int(image.width * scale), int(image.height * scale))
                 image = image.resize(new_size, Image.Resampling.LANCZOS)

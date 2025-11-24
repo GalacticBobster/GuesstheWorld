@@ -255,7 +255,7 @@ class PlanetGuessGame:
         # Scale up for better visibility
         scale_factor = 2
         new_size = (PATCH_SIZE * scale_factor, PATCH_SIZE * scale_factor)
-        patch_resized = patch.resize(new_size, Image.NEAREST)
+        patch_resized = patch.resize(new_size, Image.LANCZOS)
         
         self.tk_patch = ImageTk.PhotoImage(patch_resized)
         self.image_label.config(image=self.tk_patch)
@@ -268,7 +268,9 @@ class PlanetGuessGame:
             return
         
         guess = self.entry.get().strip().lower()
-        if guess == self.target_name.lower():
+        target_name_lower = self.target_name.lower()
+        
+        if guess == target_name_lower:
             self.feedback.config(text=f"Correct! It was {self.target_name} 🎉")
             self.score += 1
         else:

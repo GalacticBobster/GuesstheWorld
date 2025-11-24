@@ -5,6 +5,7 @@ Tests the basic functionality of the planetary data API for all supported planet
 """
 
 import unittest
+import math
 from orbital_data_api import PlanetaryDataAPI, create_planet_metadata_dict
 
 
@@ -58,12 +59,12 @@ class TestPlanetaryDataAPI(unittest.TestCase):
         """Test that km per degree is calculated correctly for each planet."""
         # Test Mars
         api_mars = PlanetaryDataAPI('mars')
-        expected_mars = (2 * 3.14159 * 3390) / 360
+        expected_mars = (2 * math.pi * 3390) / 360
         self.assertAlmostEqual(api_mars.km_per_degree, expected_mars, places=2)
         
         # Test Moon
         api_moon = PlanetaryDataAPI('moon')
-        expected_moon = (2 * 3.14159 * 1737) / 360
+        expected_moon = (2 * math.pi * 1737) / 360
         self.assertAlmostEqual(api_moon.km_per_degree, expected_moon, places=2)
     
     def test_search_images_parameters(self):
